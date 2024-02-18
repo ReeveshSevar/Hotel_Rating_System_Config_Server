@@ -1,0 +1,60 @@
+server:
+  port: 1111
+spring:
+  application:
+    name: USER-SERVICE
+  config:
+    import: optional:configserver:http://localhost:8888
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: oracle.jdbc.driver.OracleDriver
+    username: oracle.jdbc.driver.OracleDriver
+    password: oracle.jdbc.driver.OracleDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-51620093.okta.com/oauth2/default
+      client:
+        registration:
+          my-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oaf6nhzyorSeu9iT5d7
+            client-secret: JKJI8dCVVgUNWUJDJ3OaxcweUfAmSYQ3OepjSqddRcqYNbo3duBuaXo8zZQAVfL5
+        provider:
+          okta:
+            issuer-uri: https://dev-51620093.okta.com/oauth2/default
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  ratelimiter: #Configuration Of RateLimiter
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 1ms
+        limit-for-period: 2
+        timeout-duration: 0s
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+okta:
+  oauth2:
+    issuer: https://dev-51620093.okta.com/oauth2/default
+    audience: api://default
